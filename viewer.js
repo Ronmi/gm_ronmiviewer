@@ -183,7 +183,7 @@ var RonmiViewer = {
         ' pix</span><br />' +
         '<span id="ifr">Progress </span><br />' +
         '<label><input id="autoResize" type="checkbox" checked="true" onclick="RonmiViewer.show();" />Auto resize picture to window size</label>' +
-		'<div id="curimg"></div>' +
+        '<div id="curimg"></div>' +
         '<div id="debug" /><span onclick="RonmiViewer.controlPanel.style.width=null;RonmiViewer.controlPanel.style.height=null;">Resize this panel to standard size</span></div>';
         
         
@@ -298,7 +298,9 @@ var RonmiViewer = {
             img.setAttribute('width', '24');
             img.setAttribute('height', '24');
             img.setAttribute('border', '1');
-            img.setAttribute('style', 'padding-right:2px;');
+            img.setAttribute('style', 'padding-right:3px;border:1px solid black;');
+			img.setAttribute('alt','Wait');
+            img.setAttribute('onload', "this.style.border='1px solid red';");
             RonmiViewer.iframe.appendChild(img);
             RonmiViewer.curFetch++;
         }
@@ -365,30 +367,30 @@ var RonmiViewer = {
 };
 
 (function(){
-/*	
-    RonmiViewer.init({
-        'getCurPage': function(resp){
-        // resp: 從xmlhttprequest取得的html code
-		// 這個method是必需的
-        },
-        'getTotalPage': function(resp){
-        // resp: 從xmlhttprequest取得的html code
-		// 這個method是必需的
-        },
-        'fetchVols': function(){
-		// 這個method是必需的
-        },
-        'convertURL': function(url){
-		// 這個method是必需的
-        },
-        'fetchPicURL': function(resp){
-        // 這個method可以不override
-        },
-        'fetchNextPageURL': function(resp){
-        // 這個method可以不override
-        },
-        'asc': false
-    });
-*/
+    /*	
+     RonmiViewer.init({
+     'getCurPage': function(resp){
+     // resp: 從xmlhttprequest取得的html code
+     // 這個method是必需的
+     },
+     'getTotalPage': function(resp){
+     // resp: 從xmlhttprequest取得的html code
+     // 這個method是必需的
+     },
+     'fetchVols': function(){
+     // 這個method是必需的
+     },
+     'convertURL': function(url){
+     // 這個method是必需的
+     },
+     'fetchPicURL': function(resp){
+     // 這個method可以不override
+     },
+     'fetchNextPageURL': function(resp){
+     // 這個method可以不override
+     },
+     'asc': false
+     });
+     */
     window.addEventListener('load', RonmiViewer.inject, false);
 })()
