@@ -233,7 +233,7 @@ var RonmiViewer = {
     'resizeHandler': function(e){
         if (document.getElementById('autoResize').checked == true) {
             var w = window.innerWidth - 10;
-            var h = window.innerHeight - 40;
+            var h = window.innerHeight - 10;
             var img = jQuery('#picLayer img');
             if (img.length < 1) 
                 return;
