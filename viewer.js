@@ -327,6 +327,7 @@ var RonmiViewer = {
     },
     'init': function(c){
         RonmiViewer.config = c;
+		window.addEventListener('load', RonmiViewer.inject, false);
     },
     'setupLink': function(e){
         RonmiViewer.vols.push([e.href, e.textContent]);
@@ -343,6 +344,12 @@ var RonmiViewer = {
         document.getElementsByTagName('head')[0].appendChild(e);
     },
     'inject': function(){
+		
+		if(typeof(RonmiViewer.config.checkValid)=='function')
+		{
+			if(!RonmiViewer.config.checkValid()) return;
+		}
+		
         if (typeof(jQuery) == 'undefined') {
             RonmiViewer.injectScript('http://jqueryjs.googlecode.com/files/jquery-1.3.2.min.js');
             RonmiViewer.injectScript('http://jquery-ui.googlecode.com/svn/tags/1.6rc6/ui/ui.core.js');
@@ -369,6 +376,10 @@ var RonmiViewer = {
 (function(){
     /*	
      RonmiViewer.init({
+     'checkValid':function(){
+     // 檢查目前頁面是否支援
+     // 這個method可以不override
+     },
      'getCurPage': function(resp){
      // resp: 從xmlhttprequest取得的html code
      // 這個method是必需的
@@ -392,5 +403,4 @@ var RonmiViewer = {
      'asc': false
      });
      */
-    window.addEventListener('load', RonmiViewer.inject, false);
 })()
