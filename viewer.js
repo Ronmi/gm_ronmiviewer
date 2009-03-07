@@ -22,6 +22,7 @@ var RonmiViewer = {
     'xmlhttp': function(url){
         RonmiViewer.req = new XMLHttpRequest();
         RonmiViewer.req.open('GET', url, true);
+		RonmiViewer.req.url=url;
         RonmiViewer.req.setRequestHeader('User-Agent', navigator.userAgent);
         RonmiViewer.req.onreadystatechange = function(){
             if (RonmiViewer.req.readyState == 4) {
@@ -64,7 +65,7 @@ var RonmiViewer = {
             // 取得圖片的url
             var picurl = RonmiViewer.config.fetchPicURL(resp);
             if (picurl == null) { // 找不到url，看看有沒有特殊取得url的函式
-                if (RonmiViewer.config.specialFetchPicURL) {
+                if (typeof(RonmiViewer.config.specialFetchPicURL)=='function') {
                     picurl = RonmiViewer.config.specialFetchPicURL(resp);
                 }
                 else {
@@ -228,6 +229,10 @@ var RonmiViewer = {
         if (tmp > 30) 
             tmp = 30;
         RonmiViewer.prefetchCount = tmp;
+		
+		// site script hook
+		if(typeof(RonmiViewer.config.onstart)=='function')
+			RonmiViewer.config.onstart(i);
         
         // 清除畫面
         RonmiViewer.screenInit();
@@ -292,8 +297,15 @@ var RonmiViewer = {
                     RonmiViewer.show();
                     return;
                 }
-                if (RonmiViewer.curID < (RonmiViewer.vols.length - 1)) 
-                    RonmiViewer.beginFetchPixURL(RonmiViewer.curID + 1);
+                if (RonmiViewer.curID < (RonmiViewer.vols.length - 1))
+				{
+					var tid=RonmiViewer.curID;
+					RonmiViewer.beginFetchPixURL(RonmiViewer.curID + 1);
+					if(typeof(RonmiViewer.config.onPrefetchNextVol)=='function')
+					{
+						RonmiViewer.config.onPrefetchNextVol(tid);
+					}
+				}
                 RonmiViewer.show();
                 return;
             }
@@ -377,8 +389,8 @@ var RonmiViewer = {
     }
 };
 
+/*
 (function(){
-    /*	
      RonmiViewer.init({
      'checkValid':function(){
      // 檢查目前頁面是否支援
@@ -399,12 +411,26 @@ var RonmiViewer = {
      // 這個method是必需的
      },
      'fetchPicURL': function(resp){
-     // 這個method可以不override
+     // 這個method是必需的
      },
      'fetchNextPageURL': function(resp){
+     // 這個method是必需的
+     },
+     'specialFetchPicURL': function(resp){
+     // 這個method可以不override
+     },
+     'specialFetchNextPageURL': function(resp){
+     // 這個method可以不override
+     },
+     'onstart':function(id)
+     {
+     // 這個method可以不override
+     },
+     'onPrefetchNextVol':function(next_vol_id)
+     {
      // 這個method可以不override
      },
      'asc': false
      });
-     */
 })()
+*/
