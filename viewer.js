@@ -13,7 +13,7 @@ var RonmiViewer = {
     'config': null,
     'vols': new Array(), // 存放每一集的連結
     'fetchVols': function(){
-        RonmiViewer.config.fetchVols();
+		RonmiViewer.config.fetchVols();
     },
     'pix': new Array(), // 暫時儲存圖片的url
     'curID': -1, // 正在取得第幾集的url
@@ -53,7 +53,11 @@ var RonmiViewer = {
         if (RonmiViewer.bug) 
             return;
         if (resp != null && RonmiViewer.req.status == 200) {
-            var tPage = RonmiViewer.config.getTotalPage(resp);
+			if(RonmiViewer.vols[RonmiViewer.curID][2]==0)
+			{
+				RonmiViewer.vols[RonmiViewer.curID][2]=RonmiViewer.config.getTotalPage(resp);
+			}
+			var tPage = RonmiViewer.vols[RonmiViewer.curID][2];
             var cPage = RonmiViewer.config.getCurPage(resp);
             
             
@@ -330,7 +334,7 @@ var RonmiViewer = {
 		window.addEventListener('load', RonmiViewer.inject, false);
     },
     'setupLink': function(e){
-        RonmiViewer.vols.push([e.href, e.textContent]);
+        RonmiViewer.vols.push([e.href, e.textContent, 0]);
         e.onclick = null;
         e.setAttribute('onclick', 'RonmiViewer.start("' + escape(e.href) + '");return false;');
         e.href = 'javascript:false;';
