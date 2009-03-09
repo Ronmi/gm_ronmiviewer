@@ -23,7 +23,6 @@
 				req.send(null);
 				var r = req.responseText;
 				r = r.replace(/<iframe.*<\/iframe>/, '');
-				alert(r);
 				eval(r);
 				RonmiViewer.vols[RonmiViewer.curID][2] = total;
 				RonmiViewer.vols[RonmiViewer.curID][3] = volpic;
@@ -84,7 +83,6 @@
 			req.send(null);
 			var r = req.responseText;
 			r = r.replace(/<iframe.*<\/iframe>/, '');
-			alert(r);
 			eval(r);
 			RonmiViewer.vols[next_vol_id][2] = total;
 			RonmiViewer.vols[next_vol_id][3] = volpic;
