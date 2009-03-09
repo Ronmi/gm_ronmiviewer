@@ -13,3 +13,62 @@ than inserts entire script into document
 besides, some tool you may need:
 javascript packer: http://orz.rmi.twbbs.org/pack/index.php
 data:URI kitchen: http://software.hixie.ch/utilities/cgi/data/data
+
+========== example code ==========
+
+(function()
+{
+
+	RonmiViewer.init(
+	{
+		'checkValid': function()
+		{
+			// 這個method不一定要override
+		},
+		
+		'getCurPage': function(resp)
+		{
+			// 這個method是必需的(required)
+		},
+		
+		'getTotalPage': function(resp)
+		{
+			// 這個method是必需的(required)
+		},
+		'fetchVols': function()
+		{
+			// 這個method是必需的(required)
+		},
+		'convertURL': function(url)
+		{
+			// 這個method是必需的(required)
+		},
+		'fetchPicURL': function(resp)
+		{
+			// 這個method是必需的(required)
+		},
+		'fetchNextPageURL': function(resp)
+		{
+			// 這個method是必需的(required)
+		},
+		'specialFetchPicURL': function(resp)
+		{
+			// 這個method不一定要override
+		},
+		'specialFetchNextPageURL': function(resp)
+		{
+			// 這個method不一定要override
+		},
+		'onstart': function(id)
+		{
+			// 這個method不一定要override
+		},
+		'onPrefetchNextVol': function(next_vol_id)
+		{
+			// 這個method不一定要override
+		},
+		'asc': false
+	});
+})()
+
+
