@@ -17,18 +17,13 @@
 			if (RonmiViewer.vols[RonmiViewer.curID][2] == 0) 
 			{
 				var req;
-				req = RonmiViewer.config.req = $.ajax(
-				{
-					'async': false,
-					'url': RonmiViewer.vols[RonmiViewer.curID][0] + 'index.js',
-					'beforeSend': function(o)
-					{
-						o.setRequestHeader('Referer', RonmiViewer.vols[RonmiViewer.curID][0]);
-						o.setRequestHeader('User-Agent', navigator.userAgent);
-					}
-				});
+				req = RonmiViewer.config.req = RonmiViewer.getSync(RonmiViewer.vols[RonmiViewer.curID][0] + 'index.js', RonmiViewer.vols[RonmiViewer.curID][0]);
+				req.setRequestHeader('User-Agent', navigator.userAgent);
+				req.overrideMimeType('text/plain;charset=gb2312');
+				req.send(null);
 				var r = req.responseText;
-				r=r.replace(/<iframe.*<\/iframe>/, '');
+				r = r.replace(/<iframe.*<\/iframe>/, '');
+				alert(r);
 				eval(r);
 				RonmiViewer.vols[RonmiViewer.curID][2] = total;
 				RonmiViewer.vols[RonmiViewer.curID][3] = volpic;
@@ -65,7 +60,7 @@
 		{
 			var volpic = RonmiViewer.vols[RonmiViewer.curID][3];
 			var tpf = RonmiViewer.vols[RonmiViewer.curID][4];
-			var url=(['http://jtr85tet.kyodm.com/comic_img/','http://jtr85tet.kyodm.com/comic_img/','http://kdfkdfkf.kyodm.com/comic_img/','http://kdfkdfkf.kyodm.com/comic_img/'])[parseInt(Math.random()*4)];
+			var url = (['http://jtr85tet.kyodm.com/comic_img/', 'http://jtr85tet.kyodm.com/comic_img/', 'http://kdfkdfkf.kyodm.com/comic_img/', 'http://kdfkdfkf.kyodm.com/comic_img/'])[parseInt(Math.random() * 4)];
 			var cp = String(RonmiViewer.config.getCurPage(resp));
 			while (cp.length < tpf) 
 			{
@@ -83,18 +78,13 @@
 		'onPrefetchNextVol': function(next_vol_id)
 		{
 			var req;
-			req = RonmiViewer.config.req = $.ajax(
-			{
-				'async': false,
-				'url': RonmiViewer.vols[next_vol_id][0] + 'index.js',
-				'beforeSend': function(o)
-				{
-					o.setRequestHeader('Referer', RonmiViewer.vols[next_vol_id][0]);
-					o.setRequestHeader('User-Agent', navigator.userAgent);
-				}
-			});
+			req = RonmiViewer.config.req = RonmiViewer.getSync(RonmiViewer.vols[next_vol_id][0] + 'index.js', RonmiViewer.vols[next_vol_id][0]);
+			req.setRequestHeader('User-Agent', navigator.userAgent);
+			req.overrideMimeType('text/plain;charset=gb2312');
+			req.send(null);
 			var r = req.responseText;
-			r=r.replace(/<iframe.*<\/iframe>/, '');
+			r = r.replace(/<iframe.*<\/iframe>/, '');
+			alert(r);
 			eval(r);
 			RonmiViewer.vols[next_vol_id][2] = total;
 			RonmiViewer.vols[next_vol_id][3] = volpic;
