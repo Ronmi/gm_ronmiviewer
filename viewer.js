@@ -443,9 +443,8 @@ var RonmiViewer =
 		
 		if (typeof(jQuery) == 'undefined') 
 		{
-			RonmiViewer.injectScript('http://jqueryjs.googlecode.com/files/jquery-1.3.2.min.js');
-			RonmiViewer.injectScript('http://jquery-ui.googlecode.com/svn/tags/1.6rc6/ui/ui.core.js');
-			RonmiViewer.injectScript('http://jquery-ui.googlecode.com/svn/tags/1.6rc6/ui/ui.draggable.js');
+			RonmiViewer.injectScript('http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js');
+			RonmiViewer.injectScript('http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/jquery-ui.min.js');
 		}
 		
 		RonmiViewer.fetchVols();
