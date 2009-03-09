@@ -27,6 +27,7 @@ var RonmiViewer =
 		ret = new XMLHttpRequest();
 		ret.open('GET', url, false);
 		ret.url = url;
+		ret.overrideMimeType('text/plain');
 		ret.setRequestHeader('User-Agent', navigator.userAgent);
 		if (refer != null) 
 			ret.setRequestHeader('Referer', refer);
@@ -38,6 +39,7 @@ var RonmiViewer =
 		ret.open('GET', url, true);
 		ret.url = url;
 		ret.setRequestHeader('User-Agent', navigator.userAgent);
+		ret.overrideMimeType('text/plain');
 		if (refer != null) 
 			ret.setRequestHeader('Referer', refer);
 		ret.onreadystatechange = callback;
@@ -365,7 +367,7 @@ var RonmiViewer =
 					RonmiViewer.beginFetchPixURL(RonmiViewer.curID + 1);
 					if (typeof(RonmiViewer.config.onPrefetchNextVol) == 'function') 
 					{
-						RonmiViewer.config.onPrefetchNextVol(tid);
+						RonmiViewer.config.onPrefetchNextVol(tid+1);
 					}
 				}
 				RonmiViewer.show();
@@ -463,4 +465,3 @@ var RonmiViewer =
 		}
 	}
 };
-
