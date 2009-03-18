@@ -213,7 +213,7 @@ var RonmiViewer =
 		var d = RonmiViewer.controlPanel;
 		if (d.style.display == 'none') 
 		{
-			jQuery(d).slideDown();
+			unsafeWindow.jQuery(d).slideDown();
 			var w = d.offsetWidth;
 			var h = d.offsetHeight;
 			var x = window.innerWidth;
@@ -224,7 +224,7 @@ var RonmiViewer =
 		}
 		else 
 		{
-			jQuery(d).slideUp();
+			unsafeWindow.jQuery(d).slideUp();
 		}
 	},
 	'controlPanel': null,
@@ -252,7 +252,7 @@ var RonmiViewer =
 		RonmiViewer.keyLayer = document.getElementById('key');
 		RonmiViewer.debugLayer = document.getElementById('debug');
 		RonmiViewer.controlPanel = document.getElementById('controlPanel');
-		jQuery(RonmiViewer.controlPanel).draggable();
+		unsafeWindow.jQuery(RonmiViewer.controlPanel).draggable();
 		window.addEventListener('keypress', RonmiViewer.debugLayerEventHandler, false);
 		window.addEventListener('resize', RonmiViewer.resizeHandler, false);
 	},
@@ -298,7 +298,7 @@ var RonmiViewer =
 		{
 			var w = window.innerWidth - 10;
 			var h = window.innerHeight - 10;
-			var img = jQuery('#picLayer img');
+			var img = unsafeWindow.jQuery('#picLayer img');
 			if (img.length < 1) 
 				return;
 			var iw = img.width();
@@ -417,11 +417,12 @@ var RonmiViewer =
 	'setupLink': function(e)
 	{
 		RonmiViewer.vols.push([e.href, e.textContent, 0]);
-		e.onclick = function()
+		e.addEventListener('click', function(e)
 		{
-			RonmiViewer.start(escape(e.href));
+			RonmiViewer.start(escape(this.href));
 			return false;
-		}
+		}, false);
+		e.setAttribute('onclick', 'return false');
 	},
 	'injectScript': function(url)
 	{
@@ -441,7 +442,7 @@ var RonmiViewer =
 				return;
 		}
 		
-		if (typeof(jQuery) == 'undefined') 
+		if (typeof(unsafeWindow.jQuery) == 'undefined') 
 		{
 			RonmiViewer.injectScript('http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js');
 			RonmiViewer.injectScript('http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/jquery-ui.min.js');
