@@ -213,7 +213,7 @@ var RonmiViewer =
 		var d = RonmiViewer.controlPanel;
 		if (d.style.display == 'none') 
 		{
-			jQuery(d).slideDown();
+			unsafeWindow.jQuery(d).slideDown();
 			var w = d.offsetWidth;
 			var h = d.offsetHeight;
 			var x = window.innerWidth;
@@ -224,7 +224,7 @@ var RonmiViewer =
 		}
 		else 
 		{
-			jQuery(d).slideUp();
+			unsafeWindow.jQuery(d).slideUp();
 		}
 	},
 	'controlPanel': null,
@@ -233,14 +233,14 @@ var RonmiViewer =
 		// 清除畫面
 		document.body.innerHTML = '<table width="100%"><tr><td><div id="picLayer"></div></td></tr></table>' +
 		'<div id="controlPanel" style="position:absolute;background-color:white;border:1px solid red;display:none;z-index:1000;padding:5px;">' +
-		'<span onclick="RonmiViewer.prev();return false;" onmouseover="this.style.cursor=\'pointer\';" onmouseout="this.style.cursor=\'\';" style="color:red;">Previous Pic</span> | <span onclick="RonmiViewer.show();return false;" onmouseover="this.style.cursor=\'pointer\';" onmouseout="this.style.cursor=\'\';" style="color:red;">Show</span> | <span onclick="RonmiViewer.next();return false;" onmouseover="this.style.cursor=\'pointer\';" onmouseout="this.style.cursor=\'\';" style="color:red;">Next Pic</span><br />' +
-		'<span id="key" onclick="RonmiViewer.toggleKey();">Hotkey disabled.</span> | <span id="info"></span> | <span id="dataLayer">Prefetch ' +
+		'<span id="prevlink" onmouseover="this.style.cursor=\'pointer\';" onmouseout="this.style.cursor=\'\';" style="color:red;">Previous Pic</span> | <span id="showlink" onmouseover="this.style.cursor=\'pointer\';" onmouseout="this.style.cursor=\'\';" style="color:red;">Show</span> | <span id="nextlink" onmouseover="this.style.cursor=\'pointer\';" onmouseout="this.style.cursor=\'\';" style="color:red;">Next Pic</span><br />' +
+		'<span id="key" onmouseover="this.style.cursor=\'pointer\';" onmouseout="this.style.cursor=\'\';">Hotkey disabled.</span> | <span id="info"></span> | <span id="dataLayer">Prefetch ' +
 		String(RonmiViewer.prefetchCount) +
 		' pix</span><br />' +
 		'<span id="ifr">Progress </span><br />' +
 		'<label><input id="autoResize" type="checkbox" checked="true" onclick="RonmiViewer.show();" />Auto resize picture to window size</label>' +
 		'<div id="curimg"></div>' +
-		'<div id="debug" /><span onclick="RonmiViewer.controlPanel.style.width=null;RonmiViewer.controlPanel.style.height=null;">Resize this panel to standard size</span></div>';
+		'<div id="debug" /><span id="resizeCtrl">Resize this panel to standard size</span></div>';
 		
 		
 		RonmiViewer.dataLayer = document.getElementById('dataLayer');
@@ -250,11 +250,32 @@ var RonmiViewer =
 		RonmiViewer.infoLayer = document.getElementById('info');
 		RonmiViewer.curimgLayer = document.getElementById('curimg');
 		RonmiViewer.keyLayer = document.getElementById('key');
+		RonmiViewer.keyLayer.addEventListener('click', function()
+		{
+			RonmiViewer.toggleKey();
+		}, false);
 		RonmiViewer.debugLayer = document.getElementById('debug');
 		RonmiViewer.controlPanel = document.getElementById('controlPanel');
-		jQuery(RonmiViewer.controlPanel).draggable();
+		unsafeWindow.jQuery(RonmiViewer.controlPanel).draggable();
 		window.addEventListener('keypress', RonmiViewer.debugLayerEventHandler, false);
 		window.addEventListener('resize', RonmiViewer.resizeHandler, false);
+		document.getElementById('prevlink').addEventListener('click', function()
+		{
+			RonmiViewer.prev();
+		}, false);
+		document.getElementById('showlink').addEventListener('click', function()
+		{
+			RonmiViewer.show();
+		}, false);
+		document.getElementById('nextlink').addEventListener('click', function()
+		{
+			RonmiViewer.next();
+		}, false);
+		document.getElementById('resizeCtrl').addEventListener('click', function()
+		{
+			RonmiViewer.controlPanel.style.width = null;
+			RonmiViewer.controlPanel.style.height = null;
+		}, false);
 	},
 	'picimg': null,
 	'start': function(url)
@@ -298,7 +319,7 @@ var RonmiViewer =
 		{
 			var w = window.innerWidth - 10;
 			var h = window.innerHeight - 10;
-			var img = jQuery('#picLayer img');
+			var img = unsafeWindow.jQuery('#picLayer img');
 			if (img.length < 1) 
 				return;
 			var iw = img.width();
@@ -326,7 +347,7 @@ var RonmiViewer =
 		if (typeof(RonmiViewer.config.specialShowPic) == 'function') 
 			RonmiViewer.picLayer.innerHTML = RonmiViewer.config.specialShowPic(RonmiViewer.pix[RonmiViewer.curPix][0]);
 		else 
-			RonmiViewer.picLayer.innerHTML = '<img onload="RonmiViewer.resizeHandler(null);" alt="Loading..." border="1" src="' + RonmiViewer.pix[RonmiViewer.curPix][0] + '" onclick="RonmiViewer.next()" />';
+			RonmiViewer.picLayer.innerHTML = '<img onclick="RonmiViewer.next();" onload="RonmiViewer.resizeHandler(null);" alt="Loading..." border="1" src="' + RonmiViewer.pix[RonmiViewer.curPix][0] + '" />';
 		RonmiViewer.resizeHandler(null);
 	},
 	'prefetching': false,
@@ -367,7 +388,7 @@ var RonmiViewer =
 					RonmiViewer.beginFetchPixURL(RonmiViewer.curID + 1);
 					if (typeof(RonmiViewer.config.onPrefetchNextVol) == 'function') 
 					{
-						RonmiViewer.config.onPrefetchNextVol(tid+1);
+						RonmiViewer.config.onPrefetchNextVol(tid + 1);
 					}
 				}
 				RonmiViewer.show();
@@ -412,16 +433,18 @@ var RonmiViewer =
 	'init': function(c)
 	{
 		RonmiViewer.config = c;
-		window.addEventListener('load', RonmiViewer.inject, false);
+		unsafeWindow.RonmiViewer=RonmiViewer;
+		unsafeWindow.addEventListener('load', unsafeWindow.RonmiViewer.inject, false);
 	},
 	'setupLink': function(e)
 	{
 		RonmiViewer.vols.push([e.href, e.textContent, 0]);
-		e.onclick = function()
+		e.addEventListener('click', function(e)
 		{
-			RonmiViewer.start(escape(e.href));
+			RonmiViewer.start(escape(this.href));
 			return false;
-		}
+		}, false);
+		e.setAttribute('onclick', 'return false');
 	},
 	'injectScript': function(url)
 	{
@@ -441,7 +464,7 @@ var RonmiViewer =
 				return;
 		}
 		
-		if (typeof(jQuery) == 'undefined') 
+		if (typeof(unsafeWindow.jQuery) == 'undefined') 
 		{
 			RonmiViewer.injectScript('http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js');
 			RonmiViewer.injectScript('http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/jquery-ui.min.js');
@@ -462,5 +485,6 @@ var RonmiViewer =
 			if (e[i].getAttribute('id') != 'RonmiViewer') 
 				e[i].parentNode.removeChild(e[i])
 		}
+		
 	}
 };
