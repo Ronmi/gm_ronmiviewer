@@ -59,7 +59,8 @@
 		{
 			var volpic = RonmiViewer.vols[RonmiViewer.curID][3];
 			var tpf = RonmiViewer.vols[RonmiViewer.curID][4];
-			var url = (['http://jtr85tet.kyodm.com/comic_img/', 'http://jtr85tet.kyodm.com/comic_img/', 'http://kdfkdfkf.kyodm.com/comic_img/', 'http://kdfkdfkf.kyodm.com/comic_img/'])[parseInt(Math.random() * 4)];
+			//var url = (['http://jtr85tet.kyodm.com/comic_img/', 'http://jtr85tet.kyodm.com/comic_img/', 'http://kdfkdfkf.kyodm.com/comic_img/', 'http://kdfkdfkf.kyodm.com/comic_img/'])[parseInt(Math.random() * 4)];
+			var url='http://kyo.kyodm.com/comic_img/';
 			var cp = String(RonmiViewer.config.getCurPage(resp));
 			while (cp.length < tpf) 
 			{
