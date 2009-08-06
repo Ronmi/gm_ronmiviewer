@@ -325,7 +325,10 @@ var RonmiViewer =
 			var iw = img.width();
 			var ih = img.height();
 			if (iw < w && ih < h) 
-				return;
+			{
+				img.width(w);
+				img.height(h);
+			}
 			var x = w / iw;
 			var y = h / ih;
 			if (x > y) 
