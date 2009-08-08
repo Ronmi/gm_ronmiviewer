@@ -14,6 +14,7 @@ var RonmiViewer =
 	},
 	'config': null,
 	'vols': new Array(), // 存放每一集的連結
+	'preferCacheSize': 10,
 	'fetchVols': function()
 	{
 		RonmiViewer.config.fetchVols();
@@ -305,6 +306,7 @@ var RonmiViewer =
 		if (tmp > 30) 
 			tmp = 30;
 		RonmiViewer.prefetchCount = tmp;
+		GM_setValue('preferCacheSize', tmp);
 		
 		// site script hook
 		if (typeof(RonmiViewer.config.onstart) == 'function') 
@@ -445,6 +447,7 @@ var RonmiViewer =
 	{
 		RonmiViewer.config = c;
 		unsafeWindow.addEventListener('load', function(){RonmiViewer.inject();}, false);
+		RonmiViewer.preferCacheSize = GM_getValue('preferCacheSize', 10);
 	},
 	'setupLink': function(e)
 	{
@@ -484,9 +487,9 @@ var RonmiViewer =
 		var e = document.createElement('div');
 		e.setAttribute('style', 'position:fixed;top:0px;left:0px;background-color:red;padding:5px;color:#ffffff;');
 		if (RonmiViewer.config.asc) 
-			e.innerHTML = 'Prefetch <input value="10" size="4" maxlength="2" id="ppp" /> pix (Max 30) | <label><input type="checkbox" id="asc" checked="true" />Ascendant(first at top)</label>';
+			e.innerHTML = 'Prefetch <input value="'+String(RonmiViewer.preferCacheSize)+'" size="4" maxlength="2" id="ppp" /> pix (Max 30) | <label><input type="checkbox" id="asc" checked="true" />Ascendant(first at top)</label>';
 		else 
-			e.innerHTML = 'Prefetch <input value="10" size="4" maxlength="2" id="ppp" /> pix (Max 30) | <label><input type="checkbox" id="asc" />Ascendant(first at top)</label>';
+			e.innerHTML = 'Prefetch <input value="'+String(RonmiViewer.preferCacheSize)+'" size="4" maxlength="2" id="ppp" /> pix (Max 30) | <label><input type="checkbox" id="asc" />Ascendant(first at top)</label>';
 		document.body.appendChild(e);
 		document.title = '[Viewer Script Ready] ' + document.title;
 		e = document.getElementsByTagName('script');
