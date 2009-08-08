@@ -6,11 +6,11 @@
 	{
 		'getCurPage': function(resp)
 		{
-			return 1;
+			RonmiViewer.curPageReady(1);
 		},
 		'getTotalPage': function(resp)
 		{
-			return 1;
+			RonmiViewer.curPageReady(1);
 		},
 		'fetchVols': function()
 		{
@@ -30,8 +30,9 @@
 		{
 			return '/display.aspx?' + String(url.match(/id=\d+$/));
 		},
-		'fetchPicURL': function(resp)
+		'fetchPicURL': function(r)
 		{
+			var resp=r.responseText;
 			var body = resp.search(/<body/);
 			var tmp = resp.substr(body);
 			var i = tmp.search(/<[sS][cC][rR][iI][pP][tT]/);

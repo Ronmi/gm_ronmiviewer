@@ -16,25 +16,27 @@
 		},
 		'getCurPage': function(resp)
 		{
-			var s = resp.match(/var current_page = \d+;/);
+			var s = resp.responseText.match(/var current_page = \d+;/);
 			if (s != null) 
 			{
 				s = String(s).substr(19);
 				s = s.substr(0, s.length - 1);
-				return parseInt(s);
+				RonmiViewer.curPageReady(parseInt(s));
 			}
-			return 1;
+			else
+				RonmiViewer.curPageReady(1);
 		},
 		'getTotalPage': function(resp)
 		{
-			var s = resp.match(/var total_page = \d+;/);
+			var s = resp.responseText.match(/var total_page = \d+;/);
 			if (s != null) 
 			{
 				s = String(s).substr(17);
 				s = s.substr(0, s.length - 1);
-				return parseInt(s);
+				RonmiViewer.totalPageReady(parseInt(s));
 			}
-			return 1;
+			else
+				RonmiViewer.totalPageReady(1);
 		},
 		'fetchVols': function()
 		{
@@ -53,9 +55,10 @@
 		{
 			return url;
 		},
-		'fetchPicURL': function(resp)
+		'fetchPicURL': function(r)
 		{
 			var d, tmp;
+			var resp=r.responseText;
 			d = resp.search(/<div id="picture"/);
 			if (d != -1) 
 			{
@@ -87,8 +90,9 @@
 			}
 			return null;
 		},
-		'fetchNextPageURL': function(resp)
+		'fetchNextPageURL': function(r)
 		{
+			var resp=r.responseText;
 			var tmp = String(resp.match(/<a [^>]+id="down">/));
 			var d = tmp.search(/href="/);
 			tmp = tmp.substr(d + 6);

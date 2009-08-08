@@ -22,43 +22,30 @@ var RonmiViewer =
 	'pix': new Array(), // 暫時儲存圖片的url
 	'curID': -1, // 正在取得第幾集的url
 	'curStatus': 2, // 目前狀況 0:正在抓 2:done 1:wait retry
-	'req': null,
-	'getSync': function(url, refer)
-	{
-		ret = new XMLHttpRequest();
-		ret.open('GET', url, false);
-		ret.url = url;
-		ret.overrideMimeType('text/plain');
-		ret.setRequestHeader('User-Agent', navigator.userAgent);
-		if (refer != null) 
-			ret.setRequestHeader('Referer', refer);
-		return ret;
-	},
 	'getAsync': function(url, callback, refer)
 	{
-		ret = new XMLHttpRequest();
-		ret.open('GET', url, true);
-		ret.url = url;
-		ret.setRequestHeader('User-Agent', navigator.userAgent);
-		ret.overrideMimeType('text/plain');
-		if (refer != null) 
-			ret.setRequestHeader('Referer', refer);
-		ret.onreadystatechange = callback;
-		return ret;
+		var h;
+		if (refer != null) h={'User-Agent': navigator.userAgent, 'Referer': refer};
+		else h={'User-Agent': navigator.userAgent};
+		GM_xmlhttpRequest({
+			method: 'GET',
+			url: url,
+			headers: h,
+			onload: function(z){ z.url=url; callback(z); }
+		});
 	},
 	'xmlhttp': function(url)
 	{
 		var r = RonmiViewer.curURL;
 		if (r == null) 
 			r = location.href;
-		RonmiViewer.req = RonmiViewer.getAsync(url, function()
+		RonmiViewer.getAsync(url, function(resp)
 		{
-			if (RonmiViewer.req.readyState == 4) 
+			if (typeof resp!='undefined') 
 			{
-				RonmiViewer.doneFetchNextURL(RonmiViewer.req.responseText);
+				RonmiViewer.doneFetchNextURL(resp);
 			}
 		}, r);
-		RonmiViewer.req.send(null);
 	},
 	'iframe': null,
 	'curURL': null,
@@ -81,52 +68,20 @@ var RonmiViewer =
 		RonmiViewer.dataLayer.innerHTML = 'Fetching ' + RonmiViewer.vols[RonmiViewer.curID][1] + ' (1)';
 	},
 	'bug': false,
-	'doneFetchNextURL': function(resp)
+	'fetchURLCache': null,
+	'doneFetchNextURL': function(r)
 	{
+		RonmiViewer.fetchURLCache = r;
+		var resp=r.responseText
 		if (RonmiViewer.bug) 
 			return;
-		if (resp != null && RonmiViewer.req.status == 200) 
+		if (resp != null && r.status == 200) 
 		{
 			if (RonmiViewer.vols[RonmiViewer.curID][2] == 0) 
 			{
-				RonmiViewer.vols[RonmiViewer.curID][2] = RonmiViewer.config.getTotalPage(resp);
+				RonmiViewer.config.getTotalPage(r);
 			}
-			var tPage = RonmiViewer.vols[RonmiViewer.curID][2];
-			var cPage = RonmiViewer.config.getCurPage(resp);
-			
-			
-			// 取得圖片的url
-			var picurl = RonmiViewer.config.fetchPicURL(resp);
-			if (picurl == null) 
-			{ // 找不到url，看看有沒有特殊取得url的函式
-				if (typeof(RonmiViewer.config.specialFetchPicURL) == 'function') 
-				{
-					picurl = RonmiViewer.config.specialFetchPicURL(resp);
-				}
-				else 
-				{
-					alert('cannot fetch url, please report this problem');
-					RonmiViewer.bug = true;
-					return;
-				}
-			}
-			RonmiViewer.pix.push([picurl, RonmiViewer.vols[RonmiViewer.curID][1]]);
-			
-			// 到底了沒？
-			if (tPage == cPage) 
-			{ // 已到底，設定一下狀態
-				RonmiViewer.curStatus = 2;
-				RonmiViewer.dataLayer.textContent = RonmiViewer.vols[RonmiViewer.curID][1] + ' Loaded';
-				RonmiViewer.show();
-			}
-			else 
-			{ // 未到底，取得下一頁url
-				RonmiViewer.curStatus = 1;
-				RonmiViewer.beginFetchNextURL(RonmiViewer.config.fetchNextPageURL(resp));
-				RonmiViewer.dataLayer.innerHTML = 'Fetching ' + RonmiViewer.vols[RonmiViewer.curID][1] + ' (' + String(cPage + 1) + '/' + tPage + ')';
-			}
-			RonmiViewer.prefetch();
-			
+			else RonmiViewer.totalPageReady(RonmiViewer.vols[RonmiViewer.curID][2]);
 		}
 		else 
 		{
@@ -136,6 +91,50 @@ var RonmiViewer =
 			}, 500);
 			RonmiViewer.dataLayer.textContent = 'Fetch failed. Waiting refetch.';
 		}
+	},
+	'totalPageReady': function(tpage)
+	{
+		var r=RonmiViewer.fetchURLCache;
+		RonmiViewer.vols[RonmiViewer.curID][2] = tpage;
+		RonmiViewer.config.getCurPage(r);
+	},
+	'curPageReady': function(cPage)
+	{
+		var r=RonmiViewer.fetchURLCache;
+		var tPage = RonmiViewer.vols[RonmiViewer.curID][2];
+		
+		
+		// 取得圖片的url
+		var picurl = RonmiViewer.config.fetchPicURL(r);
+		if (picurl == null) 
+		{ // 找不到url，看看有沒有特殊取得url的函式
+			if (typeof(RonmiViewer.config.specialFetchPicURL) == 'function') 
+			{
+				picurl = RonmiViewer.config.specialFetchPicURL(r);
+			}
+			else 
+			{
+				alert('cannot fetch url, please report this problem');
+				RonmiViewer.bug = true;
+				return;
+			}
+		}
+		RonmiViewer.pix.push([picurl, RonmiViewer.vols[RonmiViewer.curID][1]]);
+		
+		// 到底了沒？
+		if (tPage == cPage) 
+		{ // 已到底，設定一下狀態
+			RonmiViewer.curStatus = 2;
+			RonmiViewer.dataLayer.textContent = RonmiViewer.vols[RonmiViewer.curID][1] + ' Loaded';
+			RonmiViewer.show();
+		}
+		else 
+		{ // 未到底，取得下一頁url
+			RonmiViewer.curStatus = 1;
+			RonmiViewer.beginFetchNextURL(RonmiViewer.config.fetchNextPageURL(r));
+			RonmiViewer.dataLayer.innerHTML = 'Fetching ' + RonmiViewer.vols[RonmiViewer.curID][1] + ' (' + String(cPage + 1) + '/' + tPage + ')';
+		}
+		RonmiViewer.prefetch();
 	},
 	'picLayer': null,
 	'dataLayer': null, // 用來顯示資訊的圖層
