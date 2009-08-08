@@ -238,10 +238,12 @@ var RonmiViewer =
 		String(RonmiViewer.prefetchCount) +
 		' pix</span><br />' +
 		'<span id="ifr">Progress </span><br />' +
-		'<label><input id="autoResize" type="checkbox" checked="true" onclick="RonmiViewer.show();" />Auto resize picture to window size</label>' +
+		'<label><input id="autoResize" type="checkbox" checked="true" />Auto resize picture to window size</label>' +
 		'<div id="curimg"></div>' +
 		'<div id="debug" /><span id="resizeCtrl">Resize this panel to standard size</span></div>';
+		//  onclick="RonmiViewer.show();"
 		
+		document.getElementById('autoResize').addEventListener('click', function(){ RonmiViewer.show(); }, false);
 		
 		RonmiViewer.dataLayer = document.getElementById('dataLayer');
 		RonmiViewer.picLayer = document.getElementById('picLayer');
@@ -325,10 +327,7 @@ var RonmiViewer =
 			var iw = img.width();
 			var ih = img.height();
 			if (iw < w && ih < h) 
-			{
-				img.width(w);
-				img.height(h);
-			}
+				return;
 			var x = w / iw;
 			var y = h / ih;
 			if (x > y) 
@@ -347,10 +346,19 @@ var RonmiViewer =
 	{
 		RonmiViewer.prefetching = false;
 		RonmiViewer.updateDebug();
-		if (typeof(RonmiViewer.config.specialShowPic) == 'function') 
-			RonmiViewer.picLayer.innerHTML = RonmiViewer.config.specialShowPic(RonmiViewer.pix[RonmiViewer.curPix][0]);
-		else 
-			RonmiViewer.picLayer.innerHTML = '<img onclick="RonmiViewer.next();" onload="RonmiViewer.resizeHandler(null);" alt="Loading..." border="1" src="' + RonmiViewer.pix[RonmiViewer.curPix][0] + '" />';
+		unsafeWindow.jQuery(RonmiViewer.picLayer).empty();
+		if (typeof(RonmiViewer.config.specialShowPic) == 'function')
+			RonmiViewer.picLayer.appendChild(RonmiViewer.config.specialShowPic(RonmiViewer.pix[RonmiViewer.curPix][0]));
+		else
+		{
+			var e=document.createElement('img');
+			e.setAttribute('alt', 'Loading...');
+			e.setAttribute('border', '1');
+			e.setAttribute('src', RonmiViewer.pix[RonmiViewer.curPix][0]);
+			RonmiViewer.picLayer.appendChild(e);
+			e.addEventListener('load', function(){ RonmiViewer.resizeHandler(null); }, false);
+			e.addEventListener('click', function(){ RonmiViewer.next(); }, false);
+		}
 		RonmiViewer.resizeHandler(null);
 	},
 	'prefetching': false,
@@ -436,8 +444,7 @@ var RonmiViewer =
 	'init': function(c)
 	{
 		RonmiViewer.config = c;
-		unsafeWindow.RonmiViewer=RonmiViewer;
-		unsafeWindow.addEventListener('load', unsafeWindow.RonmiViewer.inject, false);
+		unsafeWindow.addEventListener('load', function(){RonmiViewer.inject();}, false);
 	},
 	'setupLink': function(e)
 	{
