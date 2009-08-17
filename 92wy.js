@@ -122,15 +122,6 @@
 				}
 				return unsafeWindow.jQuery('<embed width="480" height="400" align="middle" type="application/x-shockwave-flash" mode="transparent" allowscriptaccess="always" quality="high" src="http://static.youku.com/v1.0.0014/v/swf/qplayer.swf" flashvars="' + arg + 'show_pre=1&show_next=1&isShowRelatedVideo=false&Version=/v1.0.0400&isAutoPlay=true&winType=interior" allowfullscreen="true" pluginspage="http://www.macromedia.com/go/getflashplayer" name="movie_player" id="movie_player" />').get(0);
 			}
-			/*
-			if(url.substr(url.length-4)=='.txt')
-			{
-				var src='data:text/html;charset=utf-8;base64,'+encodeURIComponent(RonmiViewer.config.base64.encode(RonmiViewer.config.novelIframeSrcPre+url+RonmiViewer.config.novelIframeSrcPost));
-				var w=String(window.innerWidth-10);
-				var h=String(window.innerHeight-10);
-				return '<iframe src="'+url+'" id="asd" onload="RonmiViewer.config.novel();" border="0" />';
-			}
-			*/
 			var e=document.createElement('img');
 			e.setAttribute('alt', 'Loading...');
 			e.setAttribute('border', '1');
@@ -138,7 +129,6 @@
 			e.addEventListener('click', function(){ RonmiViewer.next(); }, false);
 			e.addEventListener('load', function(){ RonmiViewer.resizeHandler(null); }, false);
 			return e;
-//			return '<img onload="RonmiViewer.resizeHandler(null);" alt="Loading..." border="1" src="' + url + '" onclick="RonmiViewer.next()" />';
 		},
 		'asc': false
 	});

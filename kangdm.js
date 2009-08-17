@@ -31,7 +31,7 @@
 				{
 					var t=z.responseText;
 					t=t.substr(0, t.indexOf('function')-1);
-					t='var c=function(){'+t+' RonmiViewer.vols[RonmiViewer.curID][5] = url; } c();';
+					t='var c=function(){'+t+'; RonmiViewer.vols[RonmiViewer.curID][5] = url; }; c();';
 					eval(t);
 					RonmiViewer.totalPageReady(total);
 				}
