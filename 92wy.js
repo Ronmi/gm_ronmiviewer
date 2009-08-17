@@ -76,7 +76,7 @@
 				// it's anime!
 				tmp = resp.substr(d);
 				tmp = String(tmp.match(/<embed[^<]+>/));
-				tmp = String(tmp.match(/src="[^"]+"/));
+				tmp = tmp.match(/src=['"]([^'"]+)['"]/);
 				tmp = tmp.substr(5, tmp.length - 6);
 				return tmp;
 			}
@@ -84,9 +84,8 @@
 			if (d != -1) 
 			{
 				// it's novel
-				tmp=resp.substr(d);
-				tmp=String(tmp.match(/src=[^>]+\.txt/)).substr(5);
-				return tmp;
+				tmp=resp.substr(d).match(/src=['"]([^>]+\.txt)["']/);
+				if(tmp && tmp[1]) return tmp[1];
 			}
 			return null;
 		},

@@ -119,14 +119,13 @@ var RonmiViewer =
 				return;
 			}
 		}
-		RonmiViewer.pix.push([picurl, RonmiViewer.vols[RonmiViewer.curID][1]]);
+		RonmiViewer.pix.push([picurl, RonmiViewer.vols[RonmiViewer.curID][1], r.finalUrl]);
 		
 		// 到底了沒？
 		if (tPage == cPage) 
 		{ // 已到底，設定一下狀態
 			RonmiViewer.curStatus = 2;
 			RonmiViewer.dataLayer.textContent = RonmiViewer.vols[RonmiViewer.curID][1] + ' Loaded';
-			RonmiViewer.show();
 		}
 		else 
 		{ // 未到底，取得下一頁url
@@ -135,7 +134,13 @@ var RonmiViewer =
 			RonmiViewer.dataLayer.innerHTML = 'Fetching ' + RonmiViewer.vols[RonmiViewer.curID][1] + ' (' + String(cPage + 1) + '/' + tPage + ')';
 		}
 		RonmiViewer.prefetch();
+		if(RonmiViewer.justBegin)
+		{
+			RonmiViewer.justBegin=false;
+			RonmiViewer.show();
+		}
 	},
+	'justBegin': false,
 	'picLayer': null,
 	'dataLayer': null, // 用來顯示資訊的圖層
 	'prefetchCount': 10,
@@ -366,10 +371,7 @@ var RonmiViewer =
 	'prefetch': function()
 	{
 		if (RonmiViewer.prefetching) 
-		{
-			RonmiViewer.show();
 			return;
-		}
 		RonmiViewer.prefetching = true;
 		// 清理多餘的prefetch
 		var img, i;
@@ -380,7 +382,7 @@ var RonmiViewer =
 		img = RonmiViewer.iframe.getElementsByTagName('img');
 		for (i = 0; i < img.length; i++) 
 		{
-			if (decodeURI(img[i].src) == RonmiViewer.pix[RonmiViewer.curPix][0]) 
+			if (!img[i].src || decodeURI(img[i].src) == RonmiViewer.pix[RonmiViewer.curPix][0]) 
 				RonmiViewer.iframe.removeChild(img[i]);
 		}
 		
@@ -391,7 +393,6 @@ var RonmiViewer =
 				if (RonmiViewer.curStatus != 2) 
 				{
 					RonmiViewer.prefetching = false;
-					RonmiViewer.show();
 					return;
 				}
 				if (RonmiViewer.curID < (RonmiViewer.vols.length - 1)) 
@@ -403,11 +404,11 @@ var RonmiViewer =
 						RonmiViewer.config.onPrefetchNextVol(tid + 1);
 					}
 				}
-				RonmiViewer.show();
 				return;
 			}
 			img = document.createElement('img');
-			img.src = RonmiViewer.pix[RonmiViewer.curFetch][0];
+			if(! RonmiViewer.config.noPrefetch)
+				img.src = RonmiViewer.pix[RonmiViewer.curFetch][0];
 			img.setAttribute('width', '24');
 			img.setAttribute('height', '24');
 			img.setAttribute('border', '1');
@@ -418,7 +419,6 @@ var RonmiViewer =
 			RonmiViewer.curFetch++;
 		}
 		RonmiViewer.prefetching = false;
-		RonmiViewer.show();
 	},
 	'prev': function()
 	{
@@ -440,6 +440,7 @@ var RonmiViewer =
 			return;
 		}
 		RonmiViewer.prefetch();
+		RonmiViewer.show();
 		window.scroll(0, 30);
 	},
 	'init': function(c)
@@ -447,6 +448,7 @@ var RonmiViewer =
 		RonmiViewer.config = c;
 		unsafeWindow.addEventListener('load', function(){RonmiViewer.inject();}, false);
 		RonmiViewer.preferCacheSize = GM_getValue('preferCacheSize', 10);
+		RonmiViewer.justBegin=true;
 	},
 	'setupLink': function(e)
 	{
