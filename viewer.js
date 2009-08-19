@@ -158,6 +158,7 @@ var RonmiViewer =
 	'keyLayer': null,
 	'setKeyEvent': function(e)
 	{
+		e.preventDefault();
 		RonmiViewer.hotCharCode = e.charCode;
 		RonmiViewer.hotKeyCode = e.keyCode;
 		RonmiViewer.hotAlt = e.altKey;
@@ -171,6 +172,7 @@ var RonmiViewer =
 	},
 	'keyEventHandler': function(e)
 	{
+		e.preventDefault();
 		if (RonmiViewer.hotCharCode == e.charCode &&
 		RonmiViewer.hotKeyCode == e.keyCode &&
 		RonmiViewer.hotAlt == e.altKey &&
@@ -257,8 +259,9 @@ var RonmiViewer =
 		RonmiViewer.infoLayer = document.getElementById('info');
 		RonmiViewer.curimgLayer = document.getElementById('curimg');
 		RonmiViewer.keyLayer = document.getElementById('key');
-		RonmiViewer.keyLayer.addEventListener('click', function()
+		RonmiViewer.keyLayer.addEventListener('click', function(e)
 		{
+			e.preventDefault();
 			RonmiViewer.toggleKey();
 		}, false);
 		RonmiViewer.debugLayer = document.getElementById('debug');
@@ -455,8 +458,8 @@ var RonmiViewer =
 		RonmiViewer.vols.push([e.href, e.textContent, 0]);
 		e.addEventListener('click', function(e)
 		{
+			e.preventDefault()
 			RonmiViewer.start(escape(this.href));
-			return false;
 		}, false);
 		e.setAttribute('onclick', 'return false');
 	},

@@ -7,7 +7,9 @@
 回報bug或是功能建議，請到my bugzilla
   http://orz.rmi.twbbs.org/bugzilla3/enter_bug.cgi?product=gm_ronmiviewer
 
-For those non-chinese users:
+
+
+For those non-chinese developers:
 
 this project is a script lib for greasemonkey.
 it's aim to create a comic viewer lib.
@@ -16,75 +18,6 @@ or http://userscripts.org/scripts/show/43063 for example
 currently, these documents are chinese only
 translations are welcome :)
 
-if you have any idea or wanna help developing site script, plz use my bugzilla
+if you have any idea or wanna help developing site script, use my bugzilla
 http://orz.rmi.twbbs.org/bugzilla3/enter_bug.cgi?product=gm_ronmiviewer
-
-for site script developer:
-you should override at least required method in example code
-than inserts entire script into document
-92wy.js is a good example for you
-for details plz visit wiki on github
-
-
-besides, some tool you may need:
-javascript packer: http://orz.rmi.twbbs.org/pack/index.php
-data:URI kitchen: http://software.hixie.ch/utilities/cgi/data/data
-
-========== example code ==========
-
-(function()
-{
-
-	RonmiViewer.init(
-	{
-		'checkValid': function()
-		{
-			// 這個method不一定要override
-		},
-		
-		'getCurPage': function(resp)
-		{
-			// 這個method是必需的(required)
-		},
-		
-		'getTotalPage': function(resp)
-		{
-			// 這個method是必需的(required)
-		},
-		'fetchVols': function()
-		{
-			// 這個method是必需的(required)
-		},
-		'convertURL': function(url)
-		{
-			// 這個method是必需的(required)
-		},
-		'fetchPicURL': function(resp)
-		{
-			// 這個method是必需的(required)
-		},
-		'fetchNextPageURL': function(resp)
-		{
-			// 這個method是必需的(required)
-		},
-		'specialFetchPicURL': function(resp)
-		{
-			// 這個method不一定要override
-		},
-		'specialFetchNextPageURL': function(resp)
-		{
-			// 這個method不一定要override
-		},
-		'onstart': function(id)
-		{
-			// 這個method不一定要override
-		},
-		'onPrefetchNextVol': function(next_vol_id)
-		{
-			// 這個method不一定要override
-		},
-		'asc': false
-	});
-})()
-
 
